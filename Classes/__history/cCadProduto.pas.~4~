@@ -1,0 +1,57 @@
+unit cCadProduto;
+
+interface
+
+uses
+ System.Classes, System.SysUtils, System.UITypes, Vcl.Controls, Vcl.ExtCtrls,
+ Vcl.Dialogs, uDTMconexao, Data.DB, FireDAC.Stan.Param, FireDAC.Comp.Client,
+ FireDAC.Comp.UI;
+
+type
+  TProduto = class
+  private
+   ConexaoDBase: TFDConnection;
+   F_produtoID:      Integer; //Field (F) São propriedades
+   F_nome:           String;
+   F_descricao:      String;
+   F_valor:          Double;
+   F_quantidade:     Double;
+   F_categoriaID:    Integer;
+
+  public
+   constructor Create(aConexao: TFDConnection);
+   destructor Destroy; override;
+
+   function InserirDB: Boolean;
+   function AtualizarDB: Boolean;
+   function ApagarDB: Boolean;
+   function Selecionar(id: Integer): Boolean;
+
+  published
+    property codigo       :Integer      read F_produtoID       write F_produtoID;
+    property nome         :String       read F_nome            write F_nome;
+    property descricao    :String       read F_descricao       write F_descricao;
+    property valor        :Double       read F_valor           write F_valor;
+    property quantidade   :Double       read F_quantidade      write F_quantidade;
+    property categoriaID  :Integer      read F_categoriaID     write F_categoriaID;
+  end;
+
+
+implementation
+
+{$REGION 'Construtor e Desconstrutor'}
+constructor TProduto.Create(aConexao: TFDConnection);
+begin
+  ConexaoDBase := aConexao;
+end;
+
+destructor TProduto.Destroy;
+begin
+
+  inherited;
+end;
+{$ENDREGION}
+
+
+
+end.

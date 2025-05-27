@@ -1,0 +1,96 @@
+inherited frmCadCategoria: TfrmCadCategoria
+  Caption = 'Cadastro de Categorias'
+  ClientWidth = 841
+  ExplicitWidth = 847
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlRodaPe: TPanel
+    Width = 841
+    ExplicitWidth = 841
+    inherited btnFechar: TBitBtn
+      Left = 751
+      ExplicitLeft = 751
+    end
+    inherited btnNavigator: TDBNavigator
+      Hints.Strings = ()
+    end
+  end
+  inherited pgcPrincipal: TPageControl
+    Width = 841
+    ActivePage = tabManutencao
+    ExplicitWidth = 841
+    inherited tabListagem: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 833
+      ExplicitHeight = 534
+      inherited Panel1: TPanel
+        Width = 833
+        ExplicitWidth = 833
+      end
+      inherited grdListagem: TDBGrid
+        Width = 833
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'categoriaID'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'descricao'
+            Visible = True
+          end>
+      end
+    end
+    inherited tabManutencao: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 833
+      ExplicitHeight = 534
+      object editCategoriaID: TLabeledEdit
+        Tag = 1
+        Left = 3
+        Top = 40
+        Width = 121
+        Height = 21
+        EditLabel.Width = 33
+        EditLabel.Height = 13
+        EditLabel.Caption = 'C'#243'digo'
+        MaxLength = 10
+        NumbersOnly = True
+        TabOrder = 0
+      end
+      object editDescricao: TLabeledEdit
+        Tag = 2
+        Left = 3
+        Top = 96
+        Width = 462
+        Height = 21
+        EditLabel.Width = 46
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Descri'#231#227'o'
+        MaxLength = 30
+        TabOrder = 1
+      end
+    end
+  end
+  inherited qryListagem: TFDQuery
+    SQL.Strings = (
+      'select categoriaID, descricao'
+      'from categorias')
+    object qryListagemcategoriaID: TFDAutoIncField
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'categoriaID'
+      Origin = 'categoriaID'
+      ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
+    end
+    object qryListagemdescricao: TStringField
+      DisplayLabel = 'Descri'#231#227'o'
+      FieldName = 'descricao'
+      Origin = 'descricao'
+      Size = 100
+    end
+  end
+end

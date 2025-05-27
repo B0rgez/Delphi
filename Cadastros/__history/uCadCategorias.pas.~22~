@@ -1,0 +1,103 @@
+unit uCadCategorias;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics,Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uTelaHerenca, Data.DB,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.ComCtrls, Vcl.DBCtrls,
+  Vcl.Buttons, Vcl.ExtCtrls, uDTMconexao, uEnum, cCadCategoria ;
+
+type
+  TfrmCadCategoria = class(TfrmTelaHerenca)
+    qryListagemcategoriaID: TFDAutoIncField;
+    qryListagemdescricao: TStringField;
+    editCategoriaID: TLabeledEdit;
+    editDescricao: TLabeledEdit;
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnAlterarClick(Sender: TObject);
+
+  private
+    oCategoria : TCategoria;
+
+
+
+    { Private declarations }
+  public
+    { Public declarations }
+    function Apagar: Boolean; override;
+    function Gravar(EstadoDoCadastro: TEstadoDoCadastro): Boolean; override;
+  end;
+
+var
+  frmCadCategoria: TfrmCadCategoria;
+
+implementation
+
+{$R *.dfm}
+
+{$REGION 'Override'}
+function TfrmCadCategoria.Apagar: Boolean;
+begin
+  if oCategoria.Seleciona(QryListagem.FieldByName('categoriaID').AsInteger) then //Atualiza Objeto dentro da MessageDlg
+  begin
+   Result := oCategoria.ApagarDB;
+  end
+end;
+
+function TfrmCadCategoria.Gravar(EstadoDoCadastro: TEstadoDoCadastro): Boolean;
+begin
+  if editCategoriaID.Text<>EmptyStr then
+   oCategoria.codigo := StrToInt(editCategoriaID.Text)
+  else
+   oCategoria.codigo := 0;
+   oCategoria.descricao := editDescricao.Text;
+
+  if (EstadoDoCadastro = ecInserir) then
+   Result := oCategoria.InserirDB
+  else if (EstadoDoCadastro = ecAlterar) then
+  begin
+   Result := oCategoria.AtualizarDB;
+  end
+end;
+{$ENDREGION}
+
+
+
+procedure TfrmCadCategoria.btnAlterarClick(Sender: TObject);
+begin
+  if oCategoria.Seleciona(QryListagem.FieldByName('categoriaID').AsInteger) then //Tratamento
+  begin
+   editCategoriaID.Text := IntToStr(oCategoria.codigo); //Instanciando a propriedade, fazendo um cast do obj
+   editDescricao.Text := oCategoria.descricao;          //pedindo a presença do objeto na tela.
+  end
+  else begin
+   btnCancelar.Click;
+   Abort;
+  end;
+
+  inherited;
+end;
+
+procedure TfrmCadCategoria.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+  if Assigned(oCategoria) then
+  FreeAndNil(oCategoria);
+
+end;
+
+procedure TfrmCadCategoria.FormCreate(Sender: TObject);
+begin
+  inherited;
+  oCategoria  := TCategoria.Create(dtmConexao.ConexaoDBase);
+  IndiceAtual := 'descricao';
+end;
+
+
+
+end.

@@ -1,0 +1,144 @@
+unit uCadProduto;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uTelaHerenca, Data.DB,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Mask, Vcl.ComCtrls, Vcl.DBCtrls,
+  Vcl.Buttons, Vcl.ExtCtrls, uDTMconexao,
+  cCadProduto, uEnum, JvExMask, JvToolEdit, JvBaseEdits, cxTextEdit,
+  cxCurrencyEdit;
+
+type
+  TfrmCadProduto = class(TfrmTelaHerenca)
+    qryListagemprodutoID: TFDAutoIncField;
+    qryListagemnome: TStringField;
+    qryListagemdescricao: TStringField;
+    qryListagemvalor: TFMTBCDField;
+    qryListagemquantidade: TFMTBCDField;
+    qryListagemcategoriaID: TIntegerField;
+    qryListagemDescricaoCategoria: TStringField;
+    editProdutoID: TLabeledEdit;
+    editNome: TLabeledEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    lkpCategoria: TDBLookupComboBox;
+    QryCategoria: TFDQuery;
+    dtsCategoria: TDataSource;
+    QryCategoriacategoriaID: TFDAutoIncField;
+    QryCategoriadescricao: TStringField;
+    editDescricao: TMemo;
+    Label4: TLabel;
+    editQuantidade: TJvCalcEdit;
+    editValor: TJvCalcEdit;
+    procedure btnAlterarClick(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure lkpCategoriaClick(Sender: TObject);
+  private
+    { Private declarations }
+    oProduto : TProduto;
+
+  public
+    { Public declarations }
+    function Apagar: Boolean; override;
+    function Gravar (EstadoDoCadastro : TEstadoDoCadastro): Boolean; override;
+  end;
+
+var
+  frmCadProduto: TfrmCadProduto;
+
+implementation
+
+{$R *.dfm}
+{$REGION 'OVERRIDE'}
+function TfrmCadProduto.Apagar: Boolean;
+begin
+  if oProduto.Selecionar(QryListagem.FieldByName('produtoID').AsInteger) then
+   begin
+    Result := oProduto.ApagarDB;
+   end;
+end;
+
+function TfrmCadProduto.Gravar(EstadoDoCadastro: TEstadoDoCadastro): Boolean;
+begin
+  if editProdutoID.Text <> EmptyStr then
+   oProduto.codigo := StrToInt(editProdutoID.Text)
+  else
+   oProduto.codigo := 0;
+
+  oProduto.nome              := editNome.Text;
+  oProduto.descricao         := editDescricao.Text;
+  oProduto.categoriaID       := lkpCategoria.KeyValue;
+  oProduto.valor             := editValor.Value;
+  oProduto.quantidade        := editQuantidade.Value;
+
+  if (EstadoDoCadastro = ecInserir) then
+   Result := oProduto.InserirDB
+  else if (EstadoDoCadastro = ecAlterar) then
+   Result := oProduto.AtualizarDB;
+
+end;
+procedure TfrmCadProduto.lkpCategoriaClick(Sender: TObject);
+begin
+  inherited;
+
+end;
+
+{$ENDREGION}
+
+procedure TfrmCadProduto.btnAlterarClick(Sender: TObject);
+begin
+  if oProduto.Selecionar(QryListagem.FieldByName('produtoID').AsInteger) then
+  begin
+   editProdutoID.Text          := IntToStr(oProduto.codigo);
+   editNome.Text               := oProduto.nome;
+   editDescricao.Text          := oProduto.descricao;
+   lkpCategoria.KeyValue       := oProduto.categoriaID;
+   editValor.Value             := oProduto.valor;
+   editQuantidade.Value        := oProduto.quantidade;
+  end
+  else begin
+   btnCancelar.Click;
+   Abort;
+  end;
+
+  inherited;
+end;
+
+procedure TfrmCadProduto.btnNovoClick(Sender: TObject);
+begin
+  inherited;
+  editNome.SetFocus;
+end;
+
+procedure TfrmCadProduto.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  QryCategoria.Close;
+  if Assigned(oProduto) then
+    FreeAndNil(oProduto);
+  inherited;
+
+end;
+
+procedure TfrmCadProduto.FormCreate(Sender: TObject);
+begin
+  inherited;
+  oProduto := TProduto.Create(dtmConexao.ConexaoDBase);
+  IndiceAtual := 'produtoID';
+end;
+
+procedure TfrmCadProduto.FormShow(Sender: TObject);
+begin
+  inherited;
+  QryCategoria.Open;
+end;
+
+end.

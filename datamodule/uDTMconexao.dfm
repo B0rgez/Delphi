@@ -1,0 +1,21 @@
+object dtmConexao: TdtmConexao
+  OldCreateOrder = False
+  Height = 428
+  Width = 503
+  object ConexaoDBase: TFDConnection
+    Params.Strings = (
+      'Database=vendas'
+      'Server=localhost\SQLEXPRESS'
+      'OSAuthent=Yes'
+      'DriverID=MSSQL')
+    Connected = True
+    LoginPrompt = False
+    Left = 160
+    Top = 200
+  end
+  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 96
+    Top = 32
+  end
+end

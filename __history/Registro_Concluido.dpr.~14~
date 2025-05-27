@@ -1,0 +1,21 @@
+program Registro_Concluido;
+
+uses
+  Vcl.Forms,
+  unitPrincipal in 'unitPrincipal.pas' {frmPrincipal},
+  uDTMconexao in 'datamodule\uDTMconexao.pas' {dtmConexao: TDataModule},
+  uTelaHerenca in 'Heranca\uTelaHerenca.pas' {frmTelaHerenca},
+  uCadCategorias in 'Cadastros\uCadCategorias.pas' {frmCadCategoria},
+  uEnum in 'uEnum.pas',
+  cCadCategoria in 'Classes\cCadCategoria.pas',
+  uCadCliente in 'Cadastros\uCadCliente.pas' {frmCadCliente};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TfrmCadCliente, frmCadCliente);
+  Application.Run;
+end.

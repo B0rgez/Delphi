@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2021/03/17 20:28:05.000.849,=C:\Users\Desenvolvedor\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/05/14 08:52:45.000.135,=C:\Users\Desenvolvedor\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/05/14 09:07:43.000.374,C:\Users\Desenvolvedor\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Projeto_Aprendiz\unitPrincipal.dfm</Transaction>
+    <Transaction>2025/05/14 09:07:43.000.374,C:\Users\Desenvolvedor\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Projeto_Aprendiz\unitPrincipal.pas</Transaction>
+    <Transaction>2025/05/14 09:08:51.000.560,C:\Users\Desenvolvedor\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Projeto_Aprendiz\SistemaPrincipal.dproj</Transaction>
+    <Transaction>2025/05/14 09:38:48.000.527,C:\Projeto_Aprendiz\SistemaPrincipal.dproj=C:\Projeto_Aprendiz\Re.dproj</Transaction>
+    <Transaction>2025/05/14 09:39:13.000.706,C:\Projeto_Aprendiz\Re.dproj=C:\Projeto_Aprendiz\Registro_Concluido.dproj</Transaction>
+    <Transaction>2025/05/14 12:07:16.000.567,=C:\Projeto_Aprendiz\datamodule\uDTMconexao.pas</Transaction>
+    <Transaction>2025/05/15 08:14:27.000.542,=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/15 08:15:09.000.014,C:\Projeto_Aprendiz\Unit1.pas=C:\Projeto_Aprendiz\Heranca\uTelaHerenca.pas</Transaction>
+    <Transaction>2025/05/15 08:15:09.000.014,C:\Projeto_Aprendiz\Unit1.dfm=C:\Projeto_Aprendiz\Heranca\uTelaHerenca.dfm</Transaction>
+    <Transaction>2025/05/16 10:20:57.000.799,=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/16 10:22:24.000.917,C:\Projeto_Aprendiz\Unit1.dfm=C:\Projeto_Aprendiz\Cadastros\uCadCategorias.dfm</Transaction>
+    <Transaction>2025/05/16 10:22:24.000.917,C:\Projeto_Aprendiz\Unit1.pas=C:\Projeto_Aprendiz\Cadastros\uCadCategorias.pas</Transaction>
+    <Transaction>2025/05/19 09:34:46.000.892,=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/19 09:35:02.000.558,C:\Projeto_Aprendiz\Unit1.pas=C:\Projeto_Aprendiz\uEnum.pas</Transaction>
+    <Transaction>2025/05/21 10:16:59.000.067,=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/21 10:17:47.000.739,C:\Projeto_Aprendiz\Classes\cCadCategoria.pas=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/23 13:13:07.000.351,=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/23 13:13:26.000.512,C:\Projeto_Aprendiz\Unit1.pas=C:\Projeto_Aprendiz\Cadastros\uCadCliente.pas</Transaction>
+    <Transaction>2025/05/23 13:13:26.000.512,C:\Projeto_Aprendiz\Unit1.dfm=C:\Projeto_Aprendiz\Cadastros\uCadCliente.dfm</Transaction>
+    <Transaction>2025/05/26 07:54:05.000.285,=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/26 07:54:28.000.913,C:\Projeto_Aprendiz\Classes\cCadCliente.pas=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/26 13:44:35.000.267,=C:\Projeto_Aprendiz\Cadastros\uCadProduto.pas</Transaction>
+    <Transaction>2025/05/26 13:46:58.000.629,C:\Projeto_Aprendiz\Cadastros\uCadProduto.pas=</Transaction>
+    <Transaction>2025/05/26 13:48:09.000.299,=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/26 13:48:23.000.203,C:\Projeto_Aprendiz\Cadastros\uCadProduto.dfm=C:\Projeto_Aprendiz\Unit1.dfm</Transaction>
+    <Transaction>2025/05/26 13:48:23.000.203,C:\Projeto_Aprendiz\Cadastros\uCadProduto.pas=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/26 14:25:12.000.500,=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+    <Transaction>2025/05/26 14:25:32.000.131,C:\Projeto_Aprendiz\Classes\cCadProduto.pas=C:\Projeto_Aprendiz\Unit1.pas</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="Cadastros"/>
+    <File Path="Cadastros\uCadCategorias.pas"/>
+    <File Path="Cadastros\uCadCategorias.dfm"/>
+    <File Path="Cadastros\uCadCliente.pas"/>
+    <File Path="Cadastros\uCadCliente.dfm"/>
+    <File Path="Cadastros\uCadProduto.pas"/>
+    <File Path="Cadastros\uCadProduto.dfm"/>
+    <File Path="Classes"/>
+    <File Path="Classes\cCadCategoria.pas"/>
+    <File Path="Classes\cCadCliente.pas"/>
+    <File Path="Classes\cCadProduto.pas"/>
+    <File Path="datamodule"/>
+    <File Path="datamodule\uDTMconexao.pas"/>
+    <File Path="datamodule\uDTMconexao.dfm"/>
+    <File Path="Heranca"/>
+    <File Path="Heranca\uTelaHerenca.pas"/>
+    <File Path="Heranca\uTelaHerenca.dfm"/>
+    <File Path="uEnum.pas"/>
+    <File Path="unitPrincipal.pas"/>
+    <File Path="unitPrincipal.dfm"/>
+  </ProjectSortOrder>
+</BorlandProject>
