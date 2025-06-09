@@ -1,0 +1,73 @@
+unit uRelVendaPorData;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uDTMconexao, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  RLReport, RLFilters, RLPDFFilter, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,uDTMVenda, uSelecionarData;
+
+type
+  TfrmRelVendaPorData = class(TForm)
+    QryVendas: TFDQuery;
+    dtsVendas: TDataSource;
+    Relatorio: TRLReport;
+    Cabecalho: TRLBand;
+    RLLabel1: TRLLabel;
+    RLDraw1: TRLDraw;
+    RLPDFFilter1: TRLPDFFilter;
+    Rodape: TRLBand;
+    RLDraw2: TRLDraw;
+    rlsData: TRLSystemInfo;
+    RLSystemInfo3: TRLSystemInfo;
+    RLLabel2: TRLLabel;
+    RLLabel3: TRLLabel;
+    QryVendasvendaID: TFDAutoIncField;
+    QryVendasclienteID: TIntegerField;
+    QryVendasnome: TStringField;
+    QryVendasdataVenda: TSQLTimeStampField;
+    QryVendastotalVenda: TFMTBCDField;
+    RLSystemInfo1: TRLSystemInfo;
+    BandDoGrupo: TRLGroup;
+    RLBand3: TRLBand;
+    RLLabel8: TRLLabel;
+    RLDBText6: TRLDBText;
+    bandColunas: TRLBand;
+    RLLabel5: TRLLabel;
+    RLLabel4: TRLLabel;
+    RLLabel7: TRLLabel;
+    RLBand1: TRLBand;
+    RLDBText1: TRLDBText;
+    RLDBText2: TRLDBText;
+    RLDBText3: TRLDBText;
+    RLBand2: TRLBand;
+    RLBand4: TRLBand;
+    RLDraw3: TRLDraw;
+    RLDraw4: TRLDraw;
+    RLLabel6: TRLLabel;
+    RLLabel9: TRLLabel;
+    RLDBResult1: TRLDBResult;
+    RLDBResult2: TRLDBResult;
+    procedure FormDestroy(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmRelVendaPorData: TfrmRelVendaPorData;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmRelVendaPorData.FormDestroy(Sender: TObject);
+begin
+  QryVendas.Close;
+end;
+
+end.
