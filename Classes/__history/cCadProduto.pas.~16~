@@ -55,61 +55,62 @@ end;
 {$ENDREGION}
 
 function TProduto.ApagarDB: Boolean;
-var QryApagar: TFDQuery;
+var
+  QryApagar: TFDQuery;
 begin
- if MessageDlg('Apagar o Registro? ' + #13+#13+
+  if MessageDlg('Apagar o Registro? ' + #13+#13+
               'Código: ' +IntToStr(F_produtoID)+ #13+
               'Descrição: '+F_nome, mtConfirmation,
               [mbYes, mbNo], 0 ) = mrNo then
- begin
-  Result := false;
-  abort;
- end;
-
- QryApagar:= TFDQuery.Create(nil);
- try
-  Result := true;
-
-  QryApagar.Connection := ConexaoDBase;
-  QryApagar.SQL.Clear;
-  QryApagar.SQL.Add('DELETE FROM produtos ' +
-                    'WHERE produtoID = :produtoID ');
-  QryApagar.ParamByName('produtoID').AsInteger := F_produtoID;
-
-  try
-   QryApagar.ExecSQL;
-  except
+  begin
    Result := false;
+   abort;
   end;
- finally
-  if Assigned(QryApagar) then
-   FreeAndNil(QryApagar);
- end;
+
+  QryApagar:= TFDQuery.Create(nil);
+  try
+   Result := true;
+
+   QryApagar.Connection := ConexaoDBase;
+   QryApagar.SQL.Clear;
+   QryApagar.SQL.Add('DELETE FROM produtos ' +
+                     'WHERE produtoID = :produtoID ');
+   QryApagar.ParamByName('produtoID').AsInteger := F_produtoID;
+
+   try
+    QryApagar.ExecSQL;
+   except
+    Result := false;
+   end;
+  finally
+   if Assigned(QryApagar) then
+    FreeAndNil(QryApagar);
+  end;
 end;
 
+{$REGION 'CRUD'}
 function TProduto.AtualizarDB: Boolean;
+var
+  QryAtualizar : TFDQuery;
 begin
- var
- QryAtualizar : TFDQuery;
-  begin
   QryAtualizar := TFDQuery.Create(nil);
   try
    Result := true;
    QryAtualizar.Connection := ConexaoDBase;
-   QryAtualizar.SQL.Add(' UPDATE produtos ' +
-                        'SET nome         = :nome ' +
-                        ',descricao       = :descricao' +
-                        ',valor           = :valor' +
-                        ',quantidade      = :quantidade' +
-                        ',categoriaID     = :categoriaID'+
-                        'WHERE produtoID  = :produtoID');
+   QryAtualizar.SQL.Add(' UPDATE produtos                '+
+                        'SET nome         = :nome        '+
+                        ',descricao       = :descricao   '+
+                        ',valor           = :valor       '+
+                        ',quantidade      = :quantidade  '+
+                        ',categoriaID     = :categoriaID '+
+                        'WHERE produtoID  = :produtoID   ');
    //parametros
    QryAtualizar.ParambyName('produtoID').AsInteger       := Self.F_produtoID;
    QryAtualizar.ParambyName('nome').AsString             := Self.F_nome;
    QryAtualizar.ParambyName('descricao').AsString        := Self.F_descricao;
    QryAtualizar.ParambyName('valor').AsFloat             := Self.F_valor;
    QryAtualizar.ParambyName('quantidade').AsFloat        := Self.F_quantidade;
-   QryAtualizar.ParambyName('categroiaID').AsInteger      := Self.F_categoriaID;
+   QryAtualizar.ParambyName('categoriaID').AsInteger     := Self.F_categoriaID;
 
    try
     QryAtualizar.ExecSQL;
@@ -119,7 +120,6 @@ begin
   finally
    QryAtualizar.Free; //destruir objeto
   end;
- end;
 end;
 
 function TProduto.InserirDB: Boolean;
@@ -127,10 +127,9 @@ var
   QryInserir: TFDQuery;
 begin
  QryInserir := TFDQuery.Create(nil);
- try
   Result := true;
   QryInserir.Connection := ConexaoDBase;
-  QryInserir.SQL.Add('INSERT INTO clientes(nome, ' +
+  QryInserir.SQL.Add('INSERT INTO produtos(nome, ' +
                      'descricao,      '+
                      'valor,          '+
                      'quantidade,     '+
@@ -160,10 +159,43 @@ begin
 end;
 
 function TProduto.Selecionar(id: Integer): Boolean;
-begin
+var
+  QrySelecionar : TFDQuery;
+ begin
+  QrySelecionar := TFDQuery.Create(nil);
+  try
+   Result := true;
+   QrySelecionar.Connection := ConexaoDBase;
+   QrySelecionar.SQL.Clear;
+   QrySelecionar.SQL.add('SELECT produtoID,  '+
+                         'nome,              '+
+                         'descricao,         '+
+                         'valor,             '+
+                         'quantidade,        '+
+                         'categoriaID        '+
+                         'FROM produtos      '+
+                         'WHERE produtoID = :produtoID');
+   QrySelecionar.ParamByName('produtoID').AsInteger := id;
 
+   try
+    QrySelecionar.Open;
+    Self.F_produtoID          := QrySelecionar.FieldByName('produtoID').AsInteger;
+    Self.F_nome               := QrySelecionar.FieldByName('nome').AsString;
+    Self.F_descricao          := QrySelecionar.FieldByName('descricao').AsString;
+    Self.F_valor              := QrySelecionar.FieldByName('valor').AsFloat;
+    Self.F_quantidade         := QrySelecionar.FieldByName('quantidade').AsFloat;
+    Self.F_categoriaID        := QrySelecionar.FieldByName('categoriaID').AsInteger;
+
+   except
+    Result := False;
+   end;
+
+  finally
+    if Assigned(QrySelecionar) then   //Destructor
+       FreeAndNil(QrySelecionar);
+  end;
 end;
-
+{$ENDREGION}
 
 
 

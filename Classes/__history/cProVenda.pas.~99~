@@ -27,7 +27,7 @@ type
   public
    constructor Create(aConexao: TFDConnection);
    destructor Destroy; override;
-   function InserirDB(cds: TClientDataSet):   Integer;
+   function InserirDB(cds: TClientDataSet):   Boolean;
    function AtualizarDB(cds: TClientDataSet): Boolean;
    function ApagarDB: Boolean;
    function Selecionar(id: Integer; var cds: TClientDataSet): Boolean;
@@ -247,6 +247,7 @@ begin
 
    QryApagarItens.ParamByName('VendaID').AsInteger := Self.F_vendaID;
 
+
    try
     QryApagarItens.ExecSQL;
    except
@@ -265,7 +266,7 @@ var
    sInNot: String;
 begin
   sInNot := EmptyStr;
-  cds.First;  //recomendado o first para antes iniciar o loop, o ponteiro começa do primeiro
+  cds.First;  //recomendado o firt para antes  iniciar o loop, o ponteiro começa do primeiro
   while not cds.Eof do
    begin
     if sInNot = EmptyStr then
@@ -274,18 +275,19 @@ begin
      sInNot := sInNot + ',' + cds.FieldByName('produtoID').AsString;
 
     cds.Next;
-   end;
+  end;
   Result := sInNot;
 end;
 
 //Insere novos registro na gridListagem
-function TVenda.InserirDB(cds:TClientDataSet):Integer;
+function TVenda.InserirDB(cds:TClientDataSet):Boolean;
 var
   QryInserir: TFDQuery;
   IdVendaGerado: Integer;
 begin
   QryInserir := TFDQuery.Create(nil);
   try
+   Result := true;
    QryInserir.Connection  := ConexaoDBase;
    ConexaoDBase.StartTransaction; //garante a transição
 
@@ -313,10 +315,9 @@ begin
       cds.Next;
      end;
     ConexaoDBase.Commit;     //Registrará o Insert
-    Result := IdVendaGerado;
    except
     ConexaoDBase.Rollback; //Caso contrario, voltar tudo
-    Result := -1;
+    Result := false;
    end;
   finally
    if Assigned(QryInserir) then

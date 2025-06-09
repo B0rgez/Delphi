@@ -89,28 +89,27 @@ end;
 
 {$REGION 'CRUD'}
 function TProduto.AtualizarDB: Boolean;
+var
+  QryAtualizar : TFDQuery;
 begin
- var
- QryAtualizar : TFDQuery;
-  begin
   QryAtualizar := TFDQuery.Create(nil);
   try
    Result := true;
    QryAtualizar.Connection := ConexaoDBase;
-   QryAtualizar.SQL.Add(' UPDATE produtos ' +
-                        'SET nome         = :nome ' +
-                        ',descricao       = :descricao' +
-                        ',valor           = :valor' +
-                        ',quantidade      = :quantidade' +
+   QryAtualizar.SQL.Add(' UPDATE produtos               '+
+                        'SET nome         = :nome       '+
+                        ',descricao       = :descricao  '+
+                        ',valor           = :valor      '+
+                        ',quantidade      = :quantidade '+
                         ',categoriaID     = :categoriaID'+
-                        'WHERE produtoID  = :produtoID');
+                        'WHERE produtoID  = :produtoID  ');
    //parametros
    QryAtualizar.ParambyName('produtoID').AsInteger       := Self.F_produtoID;
    QryAtualizar.ParambyName('nome').AsString             := Self.F_nome;
    QryAtualizar.ParambyName('descricao').AsString        := Self.F_descricao;
    QryAtualizar.ParambyName('valor').AsFloat             := Self.F_valor;
    QryAtualizar.ParambyName('quantidade').AsFloat        := Self.F_quantidade;
-   QryAtualizar.ParambyName('categroiaID').AsInteger      := Self.F_categoriaID;
+   QryAtualizar.ParambyName('categoriaID').AsInteger     := Self.F_categoriaID;
 
    try
     QryAtualizar.ExecSQL;
@@ -120,7 +119,6 @@ begin
   finally
    QryAtualizar.Free; //destruir objeto
   end;
- end;
 end;
 
 function TProduto.InserirDB: Boolean;
@@ -174,7 +172,7 @@ var
                          'descricao,         '+
                          'valor,             '+
                          'quantidade,        '+
-                         'categoriaID,       '+
+                         'categoriaID        '+
                          'FROM produtos      '+
                          'WHERE produtoID = :produtoID');
    QrySelecionar.ParamByName('produtoID').AsInteger := id;

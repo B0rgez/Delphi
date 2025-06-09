@@ -13,8 +13,8 @@ type
   private
     ConexaoDBase: TFDConnection;
     F_categoriaID: Integer;
-    F_descricao: String;
-   protected
+    F_descricao: string;
+   protected               //escopo de visibilidade
     function GetCodigo: Integer;
     function GetDescricao: String;
     procedure SetCodigo(const Value: Integer);
@@ -55,7 +55,8 @@ end;
 
 {$REGION 'CRUD' }
 function TCategoria.ApagarDB: Boolean;
-var QryApagar: TFDQuery;
+var
+  QryApagar: TFDQuery;
 begin
   if MessageDlg('Apagar o Registro: ' + #13+#13+         //quebra linhas(Serquilha #)
                'Código: ' +IntToStr(F_categoriaID)+ #13+ //Cast
@@ -66,7 +67,7 @@ begin
    abort;
   end;
 
-  QryApagar:= TFDQuery.Create(nil);
+  QryApagar := TFDQuery.Create(nil); //instancia o objeto
   try
    Result := true;
 
@@ -77,10 +78,10 @@ begin
 
    try
     QryApagar.ExecSQL;
-   except
+   except            //entra quando dá erro
     Result := false;
    end;
-  finally
+  finally            //libera
    if Assigned(QryApagar) then
     FreeAndNil(QryApagar);
   end;
@@ -92,7 +93,6 @@ var
   QryAtualizar : TFDQuery;
 begin
   QryAtualizar := TFDQuery.Create(nil);       //é recomendado colocar antes
-
   try
    Result := true;
 
@@ -141,31 +141,29 @@ function TCategoria.Seleciona(id: Integer): Boolean;
 var
   QrySelecionar : TFDQuery;
 begin
- QrySelecionar := TFDQuery.Create(nil);
- try
-  Result := true;
-
-  QrySelecionar.Connection := ConexaoDBase;
-  QrySelecionar.SQL.Clear;
-  QrySelecionar.SQL.add(' SELECT categoriaID,' +
-                        '        descricao ' +
-                        ' FROM categorias ' +
-                        ' WHERE categoriaID = :categoriaID');
-  QrySelecionar.ParamByName('categoriaID').AsInteger := id;    //passa parametro pra Query
-
+  QrySelecionar := TFDQuery.Create(nil);
   try
-   QrySelecionar.Open;              //Abrir
+   Result := true;
+   QrySelecionar.Connection := ConexaoDBase;
+   QrySelecionar.SQL.Clear;
+   QrySelecionar.SQL.add('SELECT categoriaID, ' +
+                         'descricao           ' +
+                         'FROM categorias     ' +
+                         'WHERE categoriaID = :categoriaID');
+   QrySelecionar.ParamByName('categoriaID').AsInteger := id;    //passa parametro pra Query
 
-   Self.F_categoriaID := QrySelecionar.FieldbyName('categoriaID').AsInteger; //recebe um campo do tipo inteiro
-   Self.F_descricao   := QrySelecionar.FieldbyName('descricao').AsString;
-  except
-   Result := False;
-  end;
+   try
+    QrySelecionar.Open;
+    Self.F_categoriaID := QrySelecionar.FieldbyName('categoriaID').AsInteger; //recebe um campo do tipo inteiro
+    Self.F_descricao   := QrySelecionar.FieldbyName('descricao').AsString;
+   except
+    Result := False;
+   end;
 
- finally
+  finally
    if Assigned(QrySelecionar) then   //Destructor
       FreeAndNil(QrySelecionar);
- end;
+  end;
 end;
 
 {$ENDREGION}
@@ -174,12 +172,12 @@ end;
 
 function TCategoria.GetCodigo: Integer;
 begin
- Result := Self.F_categoriaID;
+  Result := Self.F_categoriaID;
 end;
 
 function TCategoria.GetDescricao: String;
 begin
- Result := Self.F_descricao;
+  Result := Self.F_descricao;
 end;
 
 procedure TCategoria.SetCodigo(const Value: Integer);

@@ -127,35 +127,35 @@ var
   QryInserir: TFDQuery;
 begin
  QryInserir := TFDQuery.Create(nil);
+ try
+  Result := true;
+  QryInserir.Connection := ConexaoDBase;
+  QryInserir.SQL.Add('INSERT INTO produtos(nome, ' +
+                     'descricao,      '+
+                     'valor,          '+
+                     'quantidade,     '+
+                     'categoriaID)    '+
+                     'VALUES(:nome,   '+
+                     ':descricao,     '+
+                     ':valor,         '+
+                     ':quantidade,    '+
+                     ':categoriaID)   ');
+
+  QryInserir.ParambyName('nome').AsString          := Self.F_nome;
+  QryInserir.ParambyName('descricao').AsString     := Self.F_descricao;
+  QryInserir.ParambyName('valor').AsFloat          := Self.F_valor;
+  QryInserir.ParambyName('quantidade').AsFloat     := Self.F_quantidade;
+  QryInserir.ParambyName('categoriaID').AsInteger  := Self.F_categoriaID;
+
   try
-   Result := true;
-   QryInserir.Connection := ConexaoDBase;
-   QryInserir.SQL.Add('INSERT INTO produtos(nome, ' +
-                      'descricao,      '+
-                      'valor,          '+
-                      'quantidade,     '+
-                      'categoriaID)    '+
-                      'VALUES(:nome,   '+
-                      ':descricao,     '+
-                      ':valor,         '+
-                      ':quantidade,    '+
-                      ':categoriaID)   ');
-
-   QryInserir.ParambyName('nome').AsString          := Self.F_nome;
-   QryInserir.ParambyName('descricao').AsString     := Self.F_descricao;
-   QryInserir.ParambyName('valor').AsFloat          := Self.F_valor;
-   QryInserir.ParambyName('quantidade').AsFloat     := Self.F_quantidade;
-   QryInserir.ParambyName('categoriaID').AsInteger  := Self.F_categoriaID;
-
-   try
-    QryInserir.ExecSQL;
-   except
-    Result := false;
-   end;
-  finally
-   if Assigned(QryInserir) then
-    FreeAndNil(QryInserir);
+   QryInserir.ExecSQL;
+  except
+   Result := false;
   end;
+ finally
+  if Assigned(QryInserir) then
+   FreeAndNil(QryInserir);
+ end;
 
 end;
 

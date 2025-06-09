@@ -1,19 +1,26 @@
-unit cCadProduto;
+unit cControleEstoque;
 
 interface
 
 uses
  System.Classes, System.SysUtils, System.UITypes, Vcl.Controls, Vcl.ExtCtrls,
  Vcl.Dialogs, uDTMconexao, Data.DB, FireDAC.Stan.Param, FireDAC.Comp.Client,
- FireDAC.Comp.UI;
+ FireDAC.Comp.UI, uDTMVenda, Datasnap.DBClient;
 
 type
+  TControleEstoque = class
+
+  private
+   ConexaoDBase: TFDConnection;
+
+  public
+
+  published
 
 
+
+  end;
 
 implementation
-
-
-
 
 end.

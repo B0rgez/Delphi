@@ -64,49 +64,49 @@ function TCliente.InserirDB: Boolean;
  var
   QryInserir: TFDQuery;
 begin
-  QryInserir := TFDQuery.Create(nil);
+ QryInserir := TFDQuery.Create(nil);
+ try
+  Result := true;
+  QryInserir.Connection := ConexaoDBase;
+  QryInserir.SQL.Add(' INSERT INTO clientes(nome, ' +
+                    'endereco,  '+
+                    'cidade,    '+
+                    'bairro,    '+
+                    'estado,    '+
+                    'cep,       '+
+                    'telefone,  '+
+                    'email,     '+
+                    'dataNascimento)' +
+                    ' VALUES(:nome , ' +
+                    ':endereco     , ' +
+                    ':cidade       , ' +
+                    ':bairro       , ' +
+                    ':estado       , ' +
+                    ':cep          , ' +
+                    ':telefone     , ' +
+                    ':email        , ' +
+                    ':datanascimento)');
+
+
+  QryInserir.ParambyName('nome').AsString       := Self.F_nome;
+  QryInserir.ParambyName('endereco').AsString   := Self.F_endereco;
+  QryInserir.ParambyName('cidade').AsString     := Self.F_cidade;
+  QryInserir.ParambyName('bairro').AsString     := Self.F_bairro;
+  QryInserir.ParambyName('estado').AsString     := Self.F_estado;
+  QryInserir.ParambyName('cep').AsString        := Self.F_cep;
+  QryInserir.ParambyName('telefone').AsString   := Self.F_telefone;
+  QryInserir.ParambyName('email').AsString      := Self.F_email;
+  QryInserir.ParambyName('dataNascimento').AsDateTime := Self.F_dataNascimento;
+
   try
-   Result := true;
-   QryInserir.Connection := ConexaoDBase;
-   QryInserir.SQL.Add(' INSERT INTO clientes(nome, ' +
-                     'endereco,  '+
-                     'cidade,    '+
-                     'bairro,    '+
-                     'estado,    '+
-                     'cep,       '+
-                     'telefone,  '+
-                     'email,     '+
-                     'dataNascimento)' +
-                     ' VALUES(:nome , ' +
-                     ':endereco     , ' +
-                     ':cidade       , ' +
-                     ':bairro       , ' +
-                     ':estado       , ' +
-                     ':cep          , ' +
-                     ':telefone     , ' +
-                     ':email        , ' +
-                     ':datanascimento)');
-
-
-   QryInserir.ParambyName('nome').AsString       := Self.F_nome;
-   QryInserir.ParambyName('endereco').AsString   := Self.F_endereco;
-   QryInserir.ParambyName('cidade').AsString     := Self.F_cidade;
-   QryInserir.ParambyName('bairro').AsString     := Self.F_bairro;
-   QryInserir.ParambyName('estado').AsString     := Self.F_estado;
-   QryInserir.ParambyName('cep').AsString        := Self.F_cep;
-   QryInserir.ParambyName('telefone').AsString   := Self.F_telefone;
-   QryInserir.ParambyName('email').AsString      := Self.F_email;
-   QryInserir.ParambyName('dataNascimento').AsDateTime := Self.F_dataNascimento;
-
-   try
-    QryInserir.ExecSQL;
-   except
-    Result := false;
-   end;
-  finally
-   if Assigned(QryInserir) then
-    FreeAndNil(QryInserir);
+   QryInserir.ExecSQL;
+  except
+   Result := false;
   end;
+ finally
+  if Assigned(QryInserir) then
+   FreeAndNil(QryInserir);
+ end;
 end;
 
 function TCliente.Selecionar(id: Integer): Boolean;
@@ -155,44 +155,43 @@ function TCliente.Selecionar(id: Integer): Boolean;
 end;
 
 function TCliente.ApagarDB: Boolean;
-var
-  QryApagar: TFDQuery;
+var QryApagar: TFDQuery;
 begin
-  if MessageDlg('Apagar o Registro? ' + #13+#13+
-               'Código: ' +IntToStr(F_clienteID)+ #13+
-               'Descrição: '+F_nome, mtConfirmation,
-               [mbYes, mbNo], 0 ) = mrNo then
-  begin
-   Result := false;
-   abort;
-  end;
+ if MessageDlg('Apagar o Registro? ' + #13+#13+
+              'Código: ' +IntToStr(F_clienteID)+ #13+
+              'Descrição: '+F_nome, mtConfirmation,
+              [mbYes, mbNo], 0 ) = mrNo then
+ begin
+  Result := false;
+  abort;
+ end;
 
-  QryApagar:= TFDQuery.Create(nil);
+ QryApagar:= TFDQuery.Create(nil);
+ try
+  Result := true;
+
+  QryApagar.Connection := ConexaoDBase;
+  QryApagar.SQL.Clear;
+  QryApagar.SQL.Add('DELETE FROM clientes ' +
+                    'WHERE clienteID = :clienteID ');
+  QryApagar.ParamByName('clienteID').AsInteger := F_clienteID;
+
   try
-   Result := true;
-
-   QryApagar.Connection := ConexaoDBase;
-   QryApagar.SQL.Clear;
-   QryApagar.SQL.Add('DELETE FROM clientes ' +
-                     'WHERE clienteID = :clienteID ');
-   QryApagar.ParamByName('clienteID').AsInteger := F_clienteID;
-
-   try
-    QryApagar.ExecSQL;
-   except
-    Result := false;
-   end;
-  finally
-   if Assigned(QryApagar) then
-    FreeAndNil(QryApagar);
+   QryApagar.ExecSQL;
+  except
+   Result := false;
   end;
+ finally
+  if Assigned(QryApagar) then
+   FreeAndNil(QryApagar);
+ end;
 end;
 
 function TCliente.AtualizarDB: Boolean;
 begin
  var
-  QryAtualizar : TFDQuery;
- begin
+ QryAtualizar : TFDQuery;
+  begin
   QryAtualizar := TFDQuery.Create(nil);
   try
    Result := true;

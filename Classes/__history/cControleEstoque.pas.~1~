@@ -1,4 +1,4 @@
-unit cCadProduto;
+unit cControleEstoque;
 
 interface
 

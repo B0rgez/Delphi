@@ -1,0 +1,32 @@
+unit cControleEstoque;
+
+interface
+
+uses
+ System.Classes, System.SysUtils, System.UITypes, Vcl.Controls, Vcl.ExtCtrls,
+ Vcl.Dialogs, uDTMconexao, Data.DB, FireDAC.Stan.Param, FireDAC.Comp.Client,
+ FireDAC.Comp.UI, uDTMVenda, Datasnap.DBClient;
+
+type
+  TControleEstoque = class
+
+  private
+   ConexaoDBase : TFDConnection;
+   F_produtoID: Integer;
+   F_quantidade: Double;
+
+  public
+   constructor Create(sConexao: TFDConnection);
+   destructor Destroy; override;
+   function BaixarEstoque: Boolean;
+   function RetornarEstoque: Boolean;
+
+  published
+   property ProdutoID:  Integer read F_produtoID  write F_produtoID;
+   property Quantidade: Double  read F_quantidade write F_quantidade;
+
+  end;
+
+implementation
+
+end.

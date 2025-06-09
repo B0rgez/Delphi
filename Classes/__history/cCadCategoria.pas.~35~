@@ -3,8 +3,9 @@ unit cCadCategoria;
 interface
 
 uses
- System.Classes,System.SysUtils, Vcl.Controls, Vcl.ExtCtrls, Vcl.Dialogs, uDTMconexao,
- Data.DB, FireDAC.Stan.Param, FireDAC.Comp.Client,FireDAC.Comp.UI;
+ System.Classes, System.SysUtils, System.UITypes, Vcl.Controls, Vcl.ExtCtrls,
+ Vcl.Dialogs, uDTMconexao, Data.DB, FireDAC.Stan.Param, FireDAC.Comp.Client,
+ FireDAC.Comp.UI;
 
 type
   TCategoria = class
@@ -12,8 +13,8 @@ type
   private
     ConexaoDBase: TFDConnection;
     F_categoriaID: Integer;
-    F_descricao: String;
-   protected
+
+   protected               //escopo de visibilidade
     function GetCodigo: Integer;
     function GetDescricao: String;
     procedure SetCodigo(const Value: Integer);
@@ -31,7 +32,6 @@ type
     property codigo: Integer read GetCodigo write SetCodigo;
     property descricao: String read GetDescricao write SetDescricao;
   end;
-
 
 implementation
 
@@ -54,24 +54,24 @@ end;
 {$ENDREGION}
 
 {$REGION 'CRUD' }
-
 function TCategoria.ApagarDB: Boolean;
 var QryApagar: TFDQuery;
 begin
-  if MessageDlg('Apagar o Registro: ' + #13+#13+ //quebra linhas(Serquilha#)
+  if MessageDlg('Apagar o Registro: ' + #13+#13+         //quebra linhas(Serquilha #)
                'Código: ' +IntToStr(F_categoriaID)+ #13+ //Cast
-               'Descrição: '+F_descricao, mtConfirmation, [mbYes, mbNo], 0 ) = mrNo then
-   begin
-    Result := false;
-    abort;
-   end;
+               'Descrição: '+F_descricao, mtConfirmation,
+               [mbYes, mbNo], 0 ) = mrNo then
+  begin
+   Result := true;
+   abort;
+  end;
 
+  QryApagar:= TFDQuery.Create(nil);
   try
    Result := true;
-   QryApagar:= TFDQuery.Create(nil);
+
    QryApagar.Connection := ConexaoDBase;
-   QryApagar.SQL.Clear;
-   QryApagar.SQL.Add('DELETE FROM categoria ' +
+   QryApagar.SQL.Add('DELETE FROM categorias ' +           //prestar atenção nos nomes dados no SQL!
                      'WHERE categoriaID = :categoriaID ');
    QryApagar.ParamByName('categoriaID').AsInteger := F_categoriaID;
 
@@ -91,37 +91,37 @@ function TCategoria.AtualizarDB: Boolean;
 var
   QryAtualizar : TFDQuery;
 begin
+  QryAtualizar := TFDQuery.Create(nil);       //é recomendado colocar antes
   try
    Result := true;
-   QryAtualizar := TFDQuery.Create(nil);
+
    QryAtualizar.Connection := ConexaoDBase;
-   QryAtualizar.SQL.Clear;
-   QryAtualizar.SQL.Add(' UPDATE categoria '+
-                        ' SET descricao = :descricao '+
-                        ' WHERE categoriaID = :categoriaID ' );
-   Self.F_categoriaID := QryAtualizar.FieldbyName('categoriaID').AsInteger;
-   Self.F_descricao   := QryAtualizar.FieldbyName('descricao').AsString;
+   QryAtualizar.SQL.Add('UPDATE categorias ' +
+                        'SET descricao = :descricao ' +
+                        'WHERE categoriaID = :categoriaID ');
+   QryAtualizar.ParambyName('categoriaID').AsInteger := Self.F_categoriaID;
+   QryAtualizar.ParambyName('descricao').AsString := Self.F_descricao;
+
    try
     QryAtualizar.ExecSQL;
    except
     Result := false;
    end;
   finally
-   if Assigned(QryAtualizar) then
-    FreeAndNil(QryAtualizar);
+   QryAtualizar.Free; //destruir objeto
   end;
-
 end;
 
-function TCategoria.InserirDB: Boolean;
+function TCategoria.InserirDB: Boolean;//Botao Gravar
 var
   QryGravar: TFDQuery;                                                        //Runtime (Variavel que é chama somente no tempo de execução)
 begin
+  QryGravar := TFDQuery.Create(nil);
   try
    Result := true;                                                            //Retorna true caso nada aconteça
-   QryGravar := TFDQuery.Create(nil);                                         //Instancia o Objeto
+                                            //Instancia o Objeto
    QryGravar.Connection := ConexaoDBase;                                      //Atribuição
-   QryGravar.SQL.Clear;                                                       //Limpa buffer
+                                                          //Limpa buffer
    QryGravar.SQL.Add(' INSERT INTO categorias(descricao) VALUES(:descricao) '); //adicionando informações no banco de dados
    QryGravar.ParamByName('descricao').AsString := Self.F_descricao;              //Identifica os paramentros e coloca os valores
    try
@@ -140,46 +140,44 @@ function TCategoria.Seleciona(id: Integer): Boolean;
 var
   QrySelecionar : TFDQuery;
 begin
- try
-  Result := true;
   QrySelecionar := TFDQuery.Create(nil);
-  QrySelecionar.Connection := ConexaoDBase;
-  QrySelecionar.SQL.Clear;
-  QrySelecionar.SQL.add(' SELECT categoriaID,' +
-                        '        descricao ' +
-                        ' FROM categorias ' +
-                        ' WHERE categoriaID = :categoriaID');
-  QrySelecionar.ParamByName('categoriaID').AsInteger := id;    //passa parametro pra Query
+   try
+    Result := true;
+    QrySelecionar.Connection := ConexaoDBase;
+    QrySelecionar.SQL.Clear;
+    QrySelecionar.SQL.add('SELECT categoriaID, ' +
+                          'descricao           ' +
+                          'FROM categorias     ' +
+                          'WHERE categoriaID = :categoriaID');
+    QrySelecionar.ParamByName('categoriaID').AsInteger := id;    //passa parametro pra Query
 
-  try
-   QrySelecionar.Open;              //Abrir
+    try
+     QrySelecionar.Open;
+     Self.F_categoriaID := QrySelecionar.FieldbyName('categoriaID').AsInteger; //recebe um campo do tipo inteiro
+     Self.F_descricao   := QrySelecionar.FieldbyName('descricao').AsString;
+    except
+     Result := False;
+    end;
 
-   Self.F_categoriaID := QrySelecionar.FieldbyName('categoriaID').AsInteger; //recebe um campo do tipo inteiro
-   Self.F_descricao   := QrySelecionar.FieldbyName('descricao').AsString;
-  except
-   Result := False;
-  end;
-
- finally
-   if Assigned(QrySelecionar) then   //Destructor
-      FreeAndNil(QrySelecionar);
- end;
+   finally
+    if Assigned(QrySelecionar) then   //Destructor
+       FreeAndNil(QrySelecionar);
+   end;
 end;
 
 {$ENDREGION}
 
 {$REGION 'Gets and Sets'}
+
 function TCategoria.GetCodigo: Integer;
 begin
- Result := Self.F_categoriaID;
+  Result := Self.F_categoriaID;
 end;
 
 function TCategoria.GetDescricao: String;
 begin
- Result := Self.F_descricao;
+  Result := Self.F_descricao;
 end;
-
-//
 
 procedure TCategoria.SetCodigo(const Value: Integer);
 begin
@@ -192,6 +190,5 @@ begin
 end;
 
 {$ENDREGION}
-
 
 end.

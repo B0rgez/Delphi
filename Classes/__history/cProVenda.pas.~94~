@@ -9,7 +9,6 @@ uses
 
 type
   TVenda = class
-
   private
    ConexaoDBase: TFDConnection;
    F_vendaID:      Integer; //Field (F) São propriedades
@@ -21,13 +20,15 @@ type
    function InNot(cds: TClientDataSet): String;
    function EsteItemExiste(vendaID, produtoID: Integer): Boolean;
    function AtualizarItem(cds: TClientDataSet): Boolean;
-   procedure BaixarEstoque(ProdutoID: Integer; Quantidade: Double);
    procedure RetornarEstoque(sCodigo: String; Acao: TAcaoExcluirEstoque);
+    procedure BaixarEstoque(ProdutoID: Integer; Quantidade: Double);
+
 
   public
    constructor Create(aConexao: TFDConnection);
    destructor Destroy; override;
-   function InserirDB(cds: TClientDataSet):   Integer;
+
+   function InserirDB(cds: TClientDataSet):   Boolean;
    function AtualizarDB(cds: TClientDataSet): Boolean;
    function ApagarDB: Boolean;
    function Selecionar(id: Integer; var cds: TClientDataSet): Boolean;
@@ -158,7 +159,7 @@ begin
   QryAtualizaItem := TFDQuery.Create(nil);
   try
    Result := true;
-   RetornarEstoque(cds.FieldByName('produtoID').AsString, aeeAlterar); //retorna o campo do produto para o estoque
+
    QryAtualizaItem.Connection := ConexaoDBase;
    QryAtualizaItem.SQL.Add('UPDATE vendasItens ');
    QryAtualizaItem.SQL.Add('SET valorUnitario = :ValorUnitario ' +
@@ -175,7 +176,6 @@ begin
 
    try
     QryAtualizaItem.ExecSQL;
-    BaixarEstoque(cds.FieldByName('produtoID').AsInteger, cds.FieldByName('quantidade').AsFloat); //baixar estoque
    except
     Result := false;
    end;
@@ -227,25 +227,19 @@ end;
 function TVenda.ApagarItens(cds: TClientDataSet) : Boolean;
 var
    QryApagarItens: TFDQuery;
-   sCodNoCds : String;
 begin
   try
    Result := true;
-   //Pega os codigos que estao no Cliente para Selecionar o In Not no Banco de Dados
-   sCodNoCds := InNot(cds);
-
-   //Retornar ao Estoque
-   RetornarEstoque(sCodNoCds, aeeApagar);
-
    QryApagarItens := TFDQuery.Create(nil);
    QryApagarItens.Connection := ConexaoDBase;
    QryApagarItens.SQL.Clear;
    QryApagarItens.SQL.Add('DELETE                             ' +
                           'FROM        vendasItens            ' +
                           'WHERE       vendaID = :VendaID     ' +
-                          'AND produtoID NOT IN (' +sCodNoCds +') ');  //InNot é uma função abaixo
+                          'AND produtoID NOT IN (' +InNot(cds) +') ');  //InNot é uma função abaixo
 
    QryApagarItens.ParamByName('VendaID').AsInteger := Self.F_vendaID;
+
 
    try
     QryApagarItens.ExecSQL;
@@ -265,7 +259,7 @@ var
    sInNot: String;
 begin
   sInNot := EmptyStr;
-  cds.First;  //recomendado o first para antes iniciar o loop, o ponteiro começa do primeiro
+  cds.First;  //recomendado o firt para antes  iniciar o loop, o ponteiro começa do primeiro
   while not cds.Eof do
    begin
     if sInNot = EmptyStr then
@@ -274,18 +268,19 @@ begin
      sInNot := sInNot + ',' + cds.FieldByName('produtoID').AsString;
 
     cds.Next;
-   end;
+  end;
   Result := sInNot;
 end;
 
 //Insere novos registro na gridListagem
-function TVenda.InserirDB(cds:TClientDataSet):Integer;
+function TVenda.InserirDB(cds:TClientDataSet):Boolean;
 var
   QryInserir: TFDQuery;
   IdVendaGerado: Integer;
 begin
   QryInserir := TFDQuery.Create(nil);
   try
+   Result := true;
    QryInserir.Connection  := ConexaoDBase;
    ConexaoDBase.StartTransaction; //garante a transição
 
@@ -313,10 +308,9 @@ begin
       cds.Next;
      end;
     ConexaoDBase.Commit;     //Registrará o Insert
-    Result := IdVendaGerado;
    except
     ConexaoDBase.Rollback; //Caso contrario, voltar tudo
-    Result := -1;
+    Result := false;
    end;
   finally
    if Assigned(QryInserir) then
