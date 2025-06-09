@@ -9,7 +9,8 @@ uses
   uDTMconexao, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  uEnum, System.UITypes, JvExMask, JvToolEdit,
+  uEnum, System.UITypes, JvExMask, JvToolEdit,JvBaseEdits, cxTextEdit,
+  cxCurrencyEdit;
 
 type
   TfrmTelaHerenca = class(TForm)
@@ -166,25 +167,18 @@ begin
   begin
    if (Components[i] is TLabeledEdit) then
     TLabeledEdit(Components[i]).Text := EmptyStr
-
    else if (Components[i] is TEdit) then
     TEdit(Components[i]).Text := EmptyStr
-
    else if (Components[i] is TMemo) then
     TMemo(Components[i]).Text := EmptyStr
-
    else if (Components[i] is TDBLookupComboBox) then
-     TDBLookupComboBox(Components[i]).KeyValue := 0
-
-   else if (Components[i] is TjvCa ) then
-     (Components[i]).Value := 0
-
+    TDBLookupComboBox(Components[i]).KeyValue := 0
+   else if (Components[i] is TJvCalcEdit ) then
+    TJvCalcEdit(Components[i]).Value := 0
    else if(Components[i] is TJvDateEdit) then
-     TJvDateEdit(Components[i]).Date := 0
-
+    TJvDateEdit(Components[i]).Date := 0
    else if (Components[i] is TMaskEdit) then
-      TMaskEdit(Components[i]).Text := EmptyStr;
-
+    TMaskEdit(Components[i]).Text := EmptyStr;
   end;
 end;
 

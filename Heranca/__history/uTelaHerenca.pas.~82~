@@ -9,25 +9,8 @@ uses
   uDTMconexao, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  uEnum, System.UITypes, JvExMask, JvToolEdit, cxGraphics, cxControls,
-  cxLookAndFeels, cxLookAndFeelPainters, cxContainer, cxEdit, dxSkinsCore,
-  dxSkinBasic, dxSkinBlack, dxSkinBlue, dxSkinBlueprint, dxSkinCaramel,
-  dxSkinCoffee, dxSkinDarkroom, dxSkinDarkSide, dxSkinDevExpressDarkStyle,
-  dxSkinDevExpressStyle, dxSkinFoggy, dxSkinGlassOceans, dxSkinHighContrast,
-  dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
-  dxSkinMcSkin, dxSkinMetropolis, dxSkinMetropolisDark, dxSkinMoneyTwins,
-  dxSkinOffice2007Black, dxSkinOffice2007Blue, dxSkinOffice2007Green,
-  dxSkinOffice2007Pink, dxSkinOffice2007Silver, dxSkinOffice2010Black,
-  dxSkinOffice2010Blue, dxSkinOffice2010Silver, dxSkinOffice2013DarkGray,
-  dxSkinOffice2013LightGray, dxSkinOffice2013White, dxSkinOffice2016Colorful,
-  dxSkinOffice2016Dark, dxSkinOffice2019Black, dxSkinOffice2019Colorful,
-  dxSkinOffice2019DarkGray, dxSkinOffice2019White, dxSkinPumpkin, dxSkinSeven,
-  dxSkinSevenClassic, dxSkinSharp, dxSkinSharpPlus, dxSkinSilver,
-  dxSkinSpringtime, dxSkinStardust, dxSkinSummer2008, dxSkinTheAsphaltWorld,
-  dxSkinTheBezier, dxSkinsDefaultPainters, dxSkinValentine,
-  dxSkinVisualStudio2013Blue, dxSkinVisualStudio2013Dark,
-  dxSkinVisualStudio2013Light, dxSkinVS2010, dxSkinWhiteprint,
-  dxSkinXmas2008Blue, cxTextEdit, cxCurrencyEdit;
+  uEnum, System.UITypes, JvExMask, JvToolEdit,JvBaseEdits, cxTextEdit,
+  cxCurrencyEdit;
 
 type
   TfrmTelaHerenca = class(TForm)
@@ -184,25 +167,18 @@ begin
   begin
    if (Components[i] is TLabeledEdit) then
     TLabeledEdit(Components[i]).Text := EmptyStr
-
    else if (Components[i] is TEdit) then
     TEdit(Components[i]).Text := EmptyStr
-
    else if (Components[i] is TMemo) then
     TMemo(Components[i]).Text := EmptyStr
-
    else if (Components[i] is TDBLookupComboBox) then
-     TDBLookupComboBox(Components[i]).KeyValue := 0
-
-   else if (Components[i] is TjvCa ) then
-     (Components[i]).Value := 0
-
+    TDBLookupComboBox(Components[i]).KeyValue := 0
+   else if (Components[i] is TJvCalcEdit ) then
+    TJvCalcEdit(Components[i]).Value := 0
    else if(Components[i] is TJvDateEdit) then
-     TJvDateEdit(Components[i]).Date := 0
-
+    TJvDateEdit(Components[i]).Date := 0
    else if (Components[i] is TMaskEdit) then
-      TMaskEdit(Components[i]).Text := EmptyStr;
-
+    TMaskEdit(Components[i]).Text := EmptyStr;
   end;
 end;
 
@@ -353,5 +329,11 @@ begin
   qryListagem.Locate(IndiceAtual, MaskPesquisar.Text, [loPartialKey]);
 end;
 
+ procedure TfrmTelaHerenca.BloqueiaCRTL_DEL_DBGrid (var Key: Word; Shift: TShiftState);
+ begin
+  //Bloqueia o CTRL + DEL
+  if(Shift = [ssCtrl] and (Key = 64) then
+    key := 0;
+ end;
 
 end.

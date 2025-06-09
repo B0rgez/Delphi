@@ -9,7 +9,8 @@ uses
   uDTMconexao, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  uEnum, System.UITypes;
+  uEnum, System.UITypes, JvExMask, JvToolEdit,JvBaseEdits, cxTextEdit,
+  cxCurrencyEdit;
 
 type
   TfrmTelaHerenca = class(TForm)
@@ -59,6 +60,7 @@ private
     function ExisteCampoObrigatorio: Boolean;
     procedure DesabilitarEditPK;
     procedure LimparEdit;
+    procedure BloqueiaCRTL_DEL_DBGrid(var Key: Word; Shift: TShiftState);
 
 public
     { Public declarations }
@@ -167,7 +169,17 @@ begin
    if (Components[i] is TLabeledEdit) then
     TLabeledEdit(Components[i]).Text := EmptyStr
    else if (Components[i] is TEdit) then
-    TEdit(Components[i]).Text := EmptyStr;
+    TEdit(Components[i]).Text := EmptyStr
+   else if (Components[i] is TMemo) then
+    TMemo(Components[i]).Text := EmptyStr
+   else if (Components[i] is TDBLookupComboBox) then
+    TDBLookupComboBox(Components[i]).KeyValue := 0
+   else if (Components[i] is TJvCalcEdit ) then
+    TJvCalcEdit(Components[i]).Value := 0
+   else if(Components[i] is TJvDateEdit) then
+    TJvDateEdit(Components[i]).Date := 0
+   else if (Components[i] is TMaskEdit) then
+    TMaskEdit(Components[i]).Text := EmptyStr;
   end;
 end;
 
@@ -253,7 +265,7 @@ begin
    ControlarBotoes(btnNovo, btnAlterar,btnCancelar,btnGravar,btnApagar,
    btnNavigator, pgcPrincipal, true );
    ControlarIndiceTab(pgcPrincipal, 0);
-   LimparEdit();
+   LimparEdit;
    QryListagem.Refresh;      //atualiza a lista da  TDBGrid, Refresh é comando interno
   end
   else begin
@@ -318,5 +330,11 @@ begin
   qryListagem.Locate(IndiceAtual, MaskPesquisar.Text, [loPartialKey]);
 end;
 
+ procedure TfrmTelaHerenca.BloqueiaCRTL_DEL_DBGrid (var Key: Word; Shift: TShiftState);
+ begin
+  //Bloqueia o CTRL + DEL
+   if(Shift = [ssCtrl]) and (Key = 64) then
+    Key := 0;
+ end;
 
 end.

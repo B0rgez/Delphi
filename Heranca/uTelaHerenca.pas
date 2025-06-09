@@ -60,6 +60,7 @@ private
     function ExisteCampoObrigatorio: Boolean;
     procedure DesabilitarEditPK;
     procedure LimparEdit;
+    procedure BloqueiaCRTL_DEL_DBGrid(var Key: Word; Shift: TShiftState);
 
 public
     { Public declarations }
@@ -220,8 +221,6 @@ begin
 
   EstadoDoCadastro := ecAlterar;
 
-
-
 end;
 
 procedure TfrmTelaHerenca.btnCancelarClick(Sender: TObject);
@@ -236,43 +235,43 @@ end;
 
 procedure TfrmTelaHerenca.btnGravarClick(Sender: TObject);
 begin
- if (ExisteCampoObrigatorio)= true then
+  if (ExisteCampoObrigatorio)= true then
   abort;
- try
-  if Gravar(EstadoDoCadastro) then //Metodo Virtual
-   begin
-    ControlarBotoes(btnNovo, btnAlterar,btnCancelar,btnGravar,btnApagar,
-    btnNavigator, pgcPrincipal, true);
-    ControlarIndiceTab(pgcPrincipal, 0);
-    EstadoDoCadastro := ecNenhum;
-    LimparEdit;
-    QryListagem.Refresh;
-   end
-  else
-   begin
-    MessageDlg('Erro na Gravação', mtError, [mbok], 0);
-   end;
-  Finally
- end;
+  try
+   if Gravar(EstadoDoCadastro) then //Metodo Virtual
+    begin
+     ControlarBotoes(btnNovo, btnAlterar,btnCancelar,btnGravar,btnApagar,
+     btnNavigator, pgcPrincipal, true);
+     ControlarIndiceTab(pgcPrincipal, 0);
+     EstadoDoCadastro := ecNenhum;
+     LimparEdit;
+     QryListagem.Refresh;
+    end
+   else
+    begin
+     MessageDlg('Erro na Gravação', mtError, [mbok], 0);
+    end;
+   Finally
+  end;
 end;
 
 procedure TfrmTelaHerenca.btnApagarClick(Sender: TObject);
 begin
- try
-  if (Apagar) then
-  begin
-   ControlarBotoes(btnNovo, btnAlterar,btnCancelar,btnGravar,btnApagar,
-   btnNavigator, pgcPrincipal, true );
-   ControlarIndiceTab(pgcPrincipal, 0);
-   LimparEdit;
-   QryListagem.Refresh;      //atualiza a lista da  TDBGrid, Refresh é comando interno
-  end
-  else begin
-   MessageDlg('Erro na Exclusão', mtError, [mbok], 0);
+  try
+   if (Apagar) then
+   begin
+    ControlarBotoes(btnNovo, btnAlterar,btnCancelar,btnGravar,btnApagar,
+    btnNavigator, pgcPrincipal, true );
+    ControlarIndiceTab(pgcPrincipal, 0);
+    LimparEdit;
+    QryListagem.Refresh;      //atualiza a lista da  TDBGrid, Refresh é comando interno
+   end
+   else begin
+    MessageDlg('Erro na Exclusão', mtError, [mbok], 0);
+   end;
+  Finally
+   EstadoDoCadastro := ecNenhum;
   end;
- Finally
-  EstadoDoCadastro := ecNenhum;
- end;
 end;
 
 procedure TfrmTelaHerenca.btnFecharClick(Sender: TObject);
@@ -300,11 +299,11 @@ end;
 procedure TfrmTelaHerenca.FormShow(Sender: TObject);
 begin
   if (qryListagem.SQL.Text <> EmptyStr) then
-  begin
+   begin
     qryListagem.IndexFieldNames := IndiceAtual;
     ExibirLabelIndice(IndiceAtual,lblIndice);
     qryListagem.Open;
-  end;
+   end;
   ControlarIndiceTab(pgcPrincipal, 0);
   DesabilitarEditPK();
   ControlarBotoes(btnNovo, btnAlterar,btnCancelar,btnGravar,
@@ -313,7 +312,7 @@ end;
 
 procedure TfrmTelaHerenca.grdListagemDblClick(Sender: TObject);
 begin
- btnAlterar.Click;
+  btnAlterar.Click;
 end;
 
 procedure TfrmTelaHerenca.grdListagemTitleClick(Column: TColumn);
@@ -329,5 +328,11 @@ begin
   qryListagem.Locate(IndiceAtual, MaskPesquisar.Text, [loPartialKey]);
 end;
 
+ procedure TfrmTelaHerenca.BloqueiaCRTL_DEL_DBGrid (var Key: Word; Shift: TShiftState);
+ begin
+  //Bloqueia o CTRL + DEL
+   if(Shift = [ssCtrl]) and (Key = 64) then
+    Key := 0;
+ end;
 
 end.

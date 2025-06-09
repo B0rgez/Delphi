@@ -292,7 +292,7 @@ object frmTelaHerenca: TfrmTelaHerenca
         object btnPesquisar: TButton
           Left = 343
           Top = 25
-          Width = 75
+          Width = 90
           Height = 25
           Caption = '&Pesquisar'
           TabOrder = 1

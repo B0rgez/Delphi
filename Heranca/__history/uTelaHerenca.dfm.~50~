@@ -265,6 +265,10 @@ object frmTelaHerenca: TfrmTelaHerenca
     TabOrder = 1
     object tabListagem: TTabSheet
       Caption = 'Listagem'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel1: TPanel
         Left = 0
         Top = 0
@@ -292,7 +296,7 @@ object frmTelaHerenca: TfrmTelaHerenca
         object btnPesquisar: TButton
           Left = 343
           Top = 25
-          Width = 75
+          Width = 90
           Height = 25
           Caption = '&Pesquisar'
           TabOrder = 1
@@ -312,12 +316,17 @@ object frmTelaHerenca: TfrmTelaHerenca
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnDblClick = grdListagemDblClick
         OnTitleClick = grdListagemTitleClick
       end
     end
     object tabManutencao: TTabSheet
       Caption = 'Manuten'#231#227'o'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
   end
   object dtsListagem: TDataSource

@@ -9,7 +9,8 @@ uses
   uDTMconexao, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  uEnum, System.UITypes;
+  uEnum, System.UITypes, JvExMask, JvToolEdit,JvBaseEdits, cxTextEdit,
+  cxCurrencyEdit;
 
 type
   TfrmTelaHerenca = class(TForm)
@@ -58,8 +59,10 @@ private
     procedure ExibirLabelIndice(Campo: String; aLabel: TLabel);
     function ExisteCampoObrigatorio: Boolean;
     procedure DesabilitarEditPK;
-    procedure LimparEdit;
 
+    procedure BloqueiaCRTL_DEL_DBGrid(var Key: Word; Shift: TShiftState);
+protected
+  procedure LimparEdit;
 public
     { Public declarations }
     EstadoDoCadastro : TEstadoDoCadastro;
@@ -167,7 +170,17 @@ begin
    if (Components[i] is TLabeledEdit) then
     TLabeledEdit(Components[i]).Text := EmptyStr
    else if (Components[i] is TEdit) then
-    TEdit(Components[i]).Text := EmptyStr;
+    TEdit(Components[i]).Text := EmptyStr
+   else if (Components[i] is TMemo) then
+    TMemo(Components[i]).Text := EmptyStr
+   else if (Components[i] is TDBLookupComboBox) then
+    TDBLookupComboBox(Components[i]).KeyValue := 0
+   else if (Components[i] is TJvCalcEdit ) then
+    TJvCalcEdit(Components[i]).Value := 0
+   else if(Components[i] is TJvDateEdit) then
+    TJvDateEdit(Components[i]).Date := 0
+   else if (Components[i] is TMaskEdit) then
+    TMaskEdit(Components[i]).Text := EmptyStr;
   end;
 end;
 
@@ -192,16 +205,14 @@ begin
 end;
 {$ENDREGION}
 
-
-
-
+{$REGION 'Botoes'}
 procedure TfrmTelaHerenca.btnNovoClick(Sender: TObject);
 begin
   ControlarBotoes(btnNovo, btnAlterar, btnCancelar, btnGravar, btnApagar,
   btnNavigator, pgcPrincipal, false );
 
   EstadoDoCadastro := ecInserir;
-  LimparEdit();
+  LimparEdit;
 end;
 
 procedure TfrmTelaHerenca.btnAlterarClick(Sender: TObject);
@@ -222,21 +233,21 @@ begin
 
   ControlarIndiceTab(pgcPrincipal, 0);
   EstadoDoCadastro := ecNenhum;
-  LimparEdit();
+  LimparEdit;
 end;
 
 procedure TfrmTelaHerenca.btnGravarClick(Sender: TObject);
 begin
-if (ExisteCampoObrigatorio)= true then
-abort;
+ if (ExisteCampoObrigatorio)= true then
+  abort;
  try
   if Gravar(EstadoDoCadastro) then //Metodo Virtual
    begin
     ControlarBotoes(btnNovo, btnAlterar,btnCancelar,btnGravar,btnApagar,
     btnNavigator, pgcPrincipal, true);
     ControlarIndiceTab(pgcPrincipal, 0);
-    EstadoDoCadastro := ecnenhum;
-    LimparEdit();
+    EstadoDoCadastro := ecNenhum;
+    LimparEdit;
     QryListagem.Refresh;
    end
   else
@@ -245,7 +256,6 @@ abort;
    end;
   Finally
  end;
-
 end;
 
 procedure TfrmTelaHerenca.btnApagarClick(Sender: TObject);
@@ -256,7 +266,7 @@ begin
    ControlarBotoes(btnNovo, btnAlterar,btnCancelar,btnGravar,btnApagar,
    btnNavigator, pgcPrincipal, true );
    ControlarIndiceTab(pgcPrincipal, 0);
-   LimparEdit();
+   LimparEdit;
    QryListagem.Refresh;      //atualiza a lista da  TDBGrid, Refresh é comando interno
   end
   else begin
@@ -271,6 +281,8 @@ procedure TfrmTelaHerenca.btnFecharClick(Sender: TObject);
 begin
   close;
 end;
+
+{$ENDREGION}
 
 procedure TfrmTelaHerenca.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -319,5 +331,11 @@ begin
   qryListagem.Locate(IndiceAtual, MaskPesquisar.Text, [loPartialKey]);
 end;
 
+ procedure TfrmTelaHerenca.BloqueiaCRTL_DEL_DBGrid (var Key: Word; Shift: TShiftState);
+ begin
+  //Bloqueia o CTRL + DEL
+   if(Shift = [ssCtrl]) and (Key = 64) then
+    Key := 0;
+ end;
 
 end.
